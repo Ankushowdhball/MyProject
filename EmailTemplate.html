@@ -400,10 +400,63 @@
   </div>
 
   <!-- Email Template Section -->
-  <div id="email" class="container">
-  <h2>Verification Completion Email Generator</h2>
-  <!-- Email form content -->
-</div>
+  <div id="email" class="container hidden">
+    <h2>Verification Completion Email Generator</h2>
+    
+    <div id="emailForm">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <label for="validationType">Validation Type:</label>
+          <input type="text" id="validationType" placeholder="e.g., Annual, Initial, Quarterly">
+          
+          <label for="clicId">CLIC ID:</label>
+          <input type="text" id="clicId" placeholder="Enter CLIC ID">
+          
+          <label for="seNo">SE No (Last 4 digits):</label>
+          <input type="text" id="seNo" maxlength="4" placeholder="e.g., 1234">
+          
+          <label for="legalName">Legal Name:</label>
+          <input type="text" id="legalName" placeholder="Enter legal business name">
+        </div>
+        <div>
+          <label for="dbaName">DBA Name:</label>
+          <input type="text" id="dbaName" placeholder="Enter DBA name">
+          
+          <label for="clmName">CLM/Merchant Name:</label>
+          <input type="text" id="clmName" placeholder="Enter contact name">
+          
+          <label for="subjectLine">Subject Line (optional):</label>
+          <input type="text" id="subjectLine" placeholder="Leave blank for default subject">
+          
+          <label for="analystName">Analyst Name:</label>
+          <input type="text" id="analystName" placeholder="Your name">
+        </div>
+      </div>
+      
+      <label for="clmEmail">CLM/Merchant Email:</label>
+      <input type="email" id="clmEmail" placeholder="recipient@example.com">
+          
+      <div style="display: flex; gap: 20px;">
+        <button onclick="generateEmailPreview()">Preview Email</button>
+        <button onclick="clearEmailForm()">Clear Form</button>
+      </div>
+    </div>
+    
+    <!-- Email Preview Section (Hidden by default) -->
+    <div id="emailPreview" class="hidden">
+      <h3>Email Preview</h3>
+      <p><strong>To:</strong> <span id="preview-to"></span></p>
+      <p><strong>Subject:</strong> <span id="preview-subject"></span></p>
+      <hr style="margin: 15px 0;">
+      <div id="preview-body"></div>
+      
+      <div id="emailActions">
+        <button onclick="generateEmail()">Send Email</button>
+        <button id="copyButton" onclick="copyEmailToClipboard()">Copy Email</button>
+        <button onclick="backToEmailForm()">Edit Template</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Dashboard Section -->
   <div id="dashboard" class="container hidden">
@@ -446,30 +499,45 @@
     };
 
     // Navigation function to show specific sections
-    function showSection(sectionId) {
-      console.log(`Navigating to section: ${sectionId}`); // Debugging
-
-      // First handle authentication check
-      const loggedIn = localStorage.getItem("loggedIn");
-      if (loggedIn !== "true" && sectionId !== "loginForm") {
-        document.getElementById("loginForm").style.display = "block";
-        return;
-      }
-
-      // Hide all sections
-      const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('hidden'); // Add 'hidden' to all sections
-      });
-
-      // Show the requested section
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.classList.remove('hidden'); // Remove 'hidden' from the selected section
-        console.log(`Section ${sectionId} is now visible`); // Debugging
-      }
-    }
+    // function showSection(sectionId) {
+    //   // First handle authentication check
+    //   const loggedIn = localStorage.getItem("loggedIn");
+    //   if (loggedIn !== "true" && sectionId !== "loginForm") {
+    //     document.getElementById("loginForm").style.display = "block";
+    //     return;
+    //   }
+      
+    //   // Hide all sections
+    //   const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
+    //   sections.forEach(id => {
+    //     const el = document.getElementById(id);
+    //     if (el) el.classList.add('hidden');
+    //   });
+      
+    //   // Show the requested section
+    //   document.getElementById(sectionId).classList.remove('hidden');
+      
+    //   // Update navigation highlighting
+    //   const navItems = document.querySelectorAll('#navMenu li');
+    //   navItems.forEach(item => {
+    //     item.classList.remove('active-nav');
+    //   });
+      
+    //   const activeNav = document.getElementById(`nav-${sectionId}`);
+    //   if (activeNav) {
+    //     activeNav.classList.add('active-nav');
+    //   }
+      
+    //   // Set personalized greeting on home page
+    //   if (sectionId === 'home') {
+    //     const userEmail = localStorage.getItem("userEmail");
+    //     if (userEmail) {
+    //       const username = userEmail.split('@')[0]; // Extract name from email
+    //       document.getElementById("greeting").innerHTML = 
+    //         `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
+    //     }
+    //   }
+    // }
   </script>
 
   <!-- 
