@@ -400,7 +400,7 @@
   </div>
 
   <!-- Email Template Section -->
-  <div id="email" class="container">
+  <div id="email" class="container hidden">
     <h2>Verification Completion Email Generator</h2>
     
     <div id="emailForm">
@@ -490,6 +490,8 @@
       const loggedIn = localStorage.getItem("loggedIn");
       if (loggedIn === "true") {
         showSection("home");
+        // Make email section visible
+        document.getElementById("email").classList.remove("hidden");
       } else {
         document.getElementById("loginForm").style.display = "block";
       }
