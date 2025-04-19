@@ -787,6 +787,9 @@ ${analystName}`;
               <p><strong>Approver:</strong> ${update.approver}</p>
             `;
             updateDetails.style.display = 'block';
+
+            // Hide the update list section
+            document.getElementById('updateListSection').style.display = 'none';
           }
         })
         .catch(error => {
