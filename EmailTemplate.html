@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Valor - Email Tool & Dashboard</title>
+  <!-- External CDN Resources -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    /**********************************************
+     * GLOBAL STYLES
+     **********************************************/
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background-color: #f4f6f8; 
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container { 
+      padding: 2rem; 
+      max-width: 1200px; 
+      margin: 2rem auto; 
+      background-color: white; 
+      border-radius: 8px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    }
+
+    h1, h2, h3 {
+      color: #444;
+      margin-bottom: 1rem;
+    }
+
+    h2 { 
+      text-align: center; 
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    button { 
+      display: block; 
+      width: 100%; 
+      padding: 12px; 
+      background-color: #007bff; 
+      color: white; 
+      font-size: 16px; 
+      border: none; 
+      border-radius: 5px; 
+      margin-top: 20px; 
+      cursor: pointer; 
+      transition: background-color 0.3s;
+    }
+    
+    button:hover { 
+      background-color: #0056b3; 
+    }
+
+    input, textarea, select { 
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc; 
+      border-radius: 5px; 
+      font-family: inherit;
+      font-size: 15px;
+    }
+
+    label { 
+      margin-top: 1rem; 
+      display: block; 
+      font-weight: bold; 
+      color: #555; 
+    }
+
+    .hidden { 
+      display: none !important; 
+    }
+
+    /**********************************************
+     * NAVBAR STYLES
+     **********************************************/
+    nav { 
+      background-color: #007bff; 
+      padding: 1rem 2rem; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      color: white; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    nav ul { 
+      list-style: none; 
+      display: flex; 
+      gap: 2rem; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    nav ul li { 
+      cursor: pointer; 
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    
+    nav ul li:hover { 
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .logo { 
+      font-size: 24px; 
+      font-weight: bold; 
+    }
+
+    .active-nav {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    /**********************************************
+     * LOGIN FORM STYLES
+     **********************************************/
+    #loginForm {
+      max-width: 450px;
+      margin: 100px auto;
+      padding: 2rem;
+    }
+
+    #loginForm h2 {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    #loginFormElement input {
+      margin-bottom: 1.5rem;
+    }
+
+    /**********************************************
+     * HOME SECTION STYLES
+     **********************************************/
+    #greeting {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    /**********************************************
+     * EMAIL SECTION STYLES 
+     **********************************************/
+    #email {
+      max-width: 800px;
+    }
+
+    #emailPreview {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    #emailPreview h3 {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    #emailActions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    #emailActions button {
+      flex: 1;
+      margin: 0;
+    }
+
+    #copyButton {
+      background-color: #28a745;
+    }
+
+    #copyButton:hover {
+      background-color: #218838;
+    }
+
+    /**********************************************
+     * UPDATES SECTION STYLES
+     **********************************************/
+    #sidebar { 
+      width: 200px; 
+      float: left; 
+      background-color: #f4f6f8; 
+      padding: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #sidebar li {
+      padding: 8px 5px;
+      border-bottom: 1px solid #eee;
+    }
+
+    #sidebar li:hover {
+      background-color: #e9ecef;
+    }
+
+    #sidebar a {
+      text-decoration: none;
+      color: #007bff;
+      display: block;
+    }
+
+    .update-content {
+      margin-left: 220px; 
+      padding: 1rem;
+    }
+
+    .update-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .update-actions button {
+      width: auto;
+      padding: 8px 15px;
+      margin: 0;
+    }
+
+    #updateDetailsSection p {
+      margin-bottom: 10px;
+    }
+
+    #updateList li {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /**********************************************
+     * DASHBOARD SECTION STYLES
+     **********************************************/
+    #fileUpload {
+      margin-bottom: 20px;
+    }
+
+    #searchInput { 
+      width: 300px; 
+      margin-bottom: 15px; 
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 20px; 
+    }
+    
+    table, th, td { 
+      border: 1px solid #ccc; 
+    }
+    
+    th, td { 
+      padding: 8px; 
+      text-align: center; 
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    #chartContainer { 
+      margin-top: 40px; 
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">Project Valor</div>
+    <ul id="navMenu">
+      <li onclick="showSection('home')" id="nav-home">Home</li>
+      <li onclick="showSection('updates')" id="nav-updates">Updates</li>
+      <li onclick="showSection('knowledge')" id="nav-knowledge">Knowledge Base</li>
+      <li onclick="showSection('email')" id="nav-email">Email Templates</li>
+      <li onclick="showSection('dashboard')" id="nav-dashboard">Dashboard</li>
+    </ul>
+  </nav>
+
+  <!-- Login Form -->
+  <div id="loginForm" class="container">
+    <h2>Login to Project Valor</h2>
+    <form id="loginFormElement">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+      
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+      
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Home Section -->
+  <div id="home" class="container hidden">
+    <h2>Welcome to Project Valor</h2>
+    <p id="greeting"></p>
+    <div>
+      <h3>Quick Access</h3>
+      <p>Use the navigation bar above to access the different tools:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><strong>Updates</strong> - View and submit updates about ongoing projects</li>
+        <li><strong>Knowledge Base</strong> - Access important documentation and guides</li>
+        <li><strong>Email Templates</strong> - Generate verification completion emails</li>
+        <li><strong>Dashboard</strong> - Upload and analyze Excel data</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Updates Section -->
+  <div id="updates" class="container hidden">
+    <h2>Updates</h2>
+
+    <!-- Sidebar for navigation -->
+    <div id="sidebar">
+      <h3>Recent Updates</h3>
+      <ul id="updateSidebar">
+        <!-- List of Subject Lines will appear here -->
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="update-content">
+      <!-- Update Form -->
+      <div id="updateForm" style="display: none;">
+        <h3>Submit Update</h3>
+        <label for="updateDate">Date:</label>
+        <input type="date" id="updateDate">
+        
+        <label for="updateSubject">Subject:</label>
+        <input type="text" id="updateSubject" placeholder="Enter subject">
+        
+        <label for="updateComment">Update/Comment:</label>
+        <textarea id="updateComment" rows="4"></textarea>
+        
+        <label for="updateApprover">Approver:</label>
+        <input type="text" id="updateApprover">
+        
+        <button onclick="addUpdate()">Submit Update</button>
+      </div>
+
+      <!-- Update Details Section (When a subject is clicked) -->
+      <div id="updateDetailsSection" style="display: none;">
+        <h3>Update Details</h3>
+        <p><strong>Date:</strong> <span id="detailDate"></span></p>
+        <p><strong>Subject:</strong> <span id="detailSubject"></span></p>
+        <p><strong>Update/Comment:</strong> <span id="detailComment"></span></p>
+        <p><strong>Approver:</strong> <span id="detailApprover"></span></p>
+        <button onclick="showUpdateList()">Back to Updates List</button>
+      </div>
+
+      <!-- List of Previous Updates -->
+      <div id="updateListSection">
+        <div class="update-actions">
+          <h3>Previous Updates</h3>
+          <button onclick="showUpdateForm()">+ Add New Update</button>
+        </div>
+        <ul id="updateList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Base Section -->
+  <div id="knowledge" class="container hidden">
+    <h2>Knowledge Base</h2>
+    <p style="text-align: center; padding: 50px 0; color: #666; font-size: 18px;">
+      🚧 This section is under construction. Check back soon for important documentation and guides. 🚧
+    </p>
+  </div>
+
+  <!-- Email Template Section -->
+  <div id="email" class="container hidden">
+    <h2>Verification Completion Email Generator</h2>
+    
+    <div id="emailForm">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <label for="validationType">Validation Type:</label>
+          <input type="text" id="validationType" placeholder="e.g., Annual, Initial, Quarterly">
+          
+          <label for="clicId">CLIC ID:</label>
+          <input type="text" id="clicId" placeholder="Enter CLIC ID">
+          
+          <label for="seNo">SE No (Last 4 digits):</label>
+          <input type="text" id="seNo" maxlength="4" placeholder="e.g., 1234">
+          
+          <label for="legalName">Legal Name:</label>
+          <input type="text" id="legalName" placeholder="Enter legal business name">
+        </div>
+        <div>
+          <label for="dbaName">DBA Name:</label>
+          <input type="text" id="dbaName" placeholder="Enter DBA name">
+          
+          <label for="clmName">CLM/Merchant Name:</label>
+          <input type="text" id="clmName" placeholder="Enter contact name">
+          
+          <label for="subjectLine">Subject Line (optional):</label>
+          <input type="text" id="subjectLine" placeholder="Leave blank for default subject">
+          
+          <label for="analystName">Analyst Name:</label>
+          <input type="text" id="analystName" placeholder="Your name">
+        </div>
+      </div>
+      
+      <label for="clmEmail">CLM/Merchant Email:</label>
+      <input type="email" id="clmEmail" placeholder="recipient@example.com">
+          
+      <div style="display: flex; gap: 20px;">
+        <button onclick="generateEmailPreview()">Preview Email</button>
+        <button onclick="clearEmailForm()">Clear Form</button>
+      </div>
+    </div>
+    
+    <!-- Email Preview Section (Hidden by default) -->
+    <div id="emailPreview" class="hidden">
+      <h3>Email Preview</h3>
+      <p><strong>To:</strong> <span id="preview-to"></span></p>
+      <p><strong>Subject:</strong> <span id="preview-subject"></span></p>
+      <hr style="margin: 15px 0;">
+      <div id="preview-body"></div>
+      
+      <div id="emailActions">
+        <button onclick="generateEmail()">Send Email</button>
+        <button id="copyButton" onclick="copyEmailToClipboard()">Copy Email</button>
+        <button onclick="backToEmailForm()">Edit Template</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboard" class="container hidden">
+    <h2>Dashboard</h2>
+    
+    <div style="margin-bottom: 20px;">
+      <label for="fileUpload">Upload Excel File:</label>
+      <input type="file" id="fileUpload" accept=".xlsx, .xls">
+    </div>
+    
+    <input type="text" id="searchInput" placeholder="Search dashboard..." onkeyup="searchTable()">
+    <div id="output"></div>
+    <button id="downloadBtn" class="hidden" onclick="downloadTable()">Download Dashboard as CSV</button>
+    <div id="chartContainer">
+      <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- 
+  *********************************************
+  JAVASCRIPT SECTION - Core Functionality
+  *********************************************
+  -->
+  <script>
+    // Store DOM elements that are frequently accessed
+    const domElements = {};
+
+    // Initialize the application
+    window.onload = function() {
+      // Check login state on page load
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn === "true") {
+        showSection("home");
+      } else {
+        document.getElementById("loginForm").style.display = "block";
+      }
+      
+      // Initialize updates section
+      loadUpdates();
+    };
+
+    // Navigation function to show specific sections
+    function showSection(sectionId) {
+      // First handle authentication check
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn !== "true" && sectionId !== "loginForm") {
+        document.getElementById("loginForm").style.display = "block";
+        return;
+      }
+      
+      // Hide all sections
+      const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      
+      // Show the requested section
+      document.getElementById(sectionId).classList.remove('hidden');
+      
+      // Update navigation highlighting
+      const navItems = document.querySelectorAll('#navMenu li');
+      navItems.forEach(item => {
+        item.classList.remove('active-nav');
+      });
+      
+      const activeNav = document.getElementById(`nav-${sectionId}`);
+      if (activeNav) {
+        activeNav.classList.add('active-nav');
+      }
+      
+      // Set personalized greeting on home page
+      if (sectionId === 'home') {
+        const userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+          const username = userEmail.split('@')[0]; // Extract name from email
+          document.getElementById("greeting").innerHTML = 
+            `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
+        }
+      }
+    }
+  </script>
+
+  <!-- 
+  *********************************************
+  JAVASCRIPT SECTION - Login Functionality
+  *********************************************
+  -->
+  <script>
+    // Dummy user data (can be replaced with real database or API)
+    const users = [
+      { email: "user@example.com", password: "password123" },
+      { email: "admin@example.com", password: "admin123" },
+      { email: "kyc@aexp.com", password: "Microsoft!098" }
+    ];
+
+    // Login form submission handler
+    document.getElementById('loginFormElement').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission to stay on the page
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      if (validateLogin(email, password)) {
+        // Store the login state and user data
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userEmail", email);
+
+        // Hide login form and show the home section
+        document.getElementById("loginForm").style.display = "none";
+        showSection("home");
+      } else {
+        alert("Invalid email or password. Please try again.");
+      }
+    });
+
+    // Validate user login credentials
+    function validateLogin(email, password) {
+      const user = users.find(u => u.email === email && u.password === password);
+      return user !== undefined;
+    }
+  </script>
+
+  <!-- 
+  *********************************************
+  JAVASCRIPT SECTION - Email Template Functionality
+  *********************************************
+  -->
+  <script>
+    // Generate email preview before sending
+    function generateEmailPreview() {
+      const validationType = document.getElementById("validationType").value;
+      const clicId = document.getElementById("clicId").value;
+      const seNo = document.getElementById("seNo").value;
+      const legalName = document.getElementById("legalName").value;
+      const dbaName = document.getElementById("dbaName").value;
+      const clmName = document.getElementById("clmName").value;
+      const subjectLineInput = document.getElementById("subjectLine").value;
+      const analystName = document.getElementById("analystName").value;
+      const clmEmail = document.getElementById("clmEmail").value;
+      
+      // Validate required fields
+      if (!validationType || !clicId || !seNo || !legalName || !clmName || !analystName || !clmEmail) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      // Generate subject line (use custom or default)
+      const subject = subjectLineInput || `Verify your American Express Merchant Account Details - ${clicId}`;
+      
+      // Generate email body with proper formatting
+      const body = `Dear ${clmName},
+
+We have successfully completed the ${validationType} verification for your merchant account with American Express.
+
+Merchant Details:
+- CLIC ID: ${clicId}
+- SE Number: XXXX${seNo}
+- Legal Name: ${legalName}${dbaName ? '\n- Doing Business As: ' + dbaName : ''}
+
+If you have any questions, feel free to reach out.
+
+Regards,
+${analystName}`;
+
+      // Update preview elements
+      document.getElementById("preview-to").textContent = clmEmail;
+      document.getElementById("preview-subject").textContent = subject;
+      document.getElementById("preview-body").innerHTML = body.replace(/\n/g, '<br>');
+      
+      // Hide form and show preview
+      document.getElementById("emailForm").classList.add("hidden");
+      document.getElementById("emailPreview").classList.remove("hidden");
+    }
+
+    // Function to launch default email client with populated fields
+    function generateEmail() {
+      const clmEmail = document.getElementById("clmEmail").value;
+      const subject = document.getElementById("preview-subject").textContent;
+      const bodyRaw = document.getElementById("preview-body").innerHTML;
+      const body = bodyRaw.replace(/<br>/g, '%0D%0A');
+      
+      const mailtoLink = `mailto:${clmEmail}?subject=${encodeURIComponent(subject)}&body=${body}`;
+      window.location.href = mailtoLink;
+    }
+    
+    // Function to copy email content to clipboard
+    function copyEmailToClipboard() {
+      const to = document.getElementById("preview-to").textContent;
+      const subject = document.getElementById("preview-subject").textContent;
+      const bodyRaw = document.getElementById("preview-body").innerHTML;
+      const body = bodyRaw.replace(/<br>/g, '\n');
+      
+      const emailContent = `To: ${to}\nSubject: ${subject}\n\n${body}`;
+      
+      navigator.clipboard.writeText(emailContent).then(() => {
+        const copyBtn = document.getElementById("copyButton");
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy Email";
+        }, 2000);
+      });
+    }
+    
+    // Return to email form from preview
+    function backToEmailForm() {
+      document.getElementById("emailPreview").classList.add("hidden");
+      document.getElementById("emailForm").classList.remove("hidden");
+    }
+    
+    // Clear all fields in the email form
+    function clearEmailForm() {
+      const inputs = document.querySelectorAll("#emailForm input");
+      inputs.forEach(input => {
+        input.value = "";
+      });
+    }
+  </script>
+
+  <!-- 
+  *********************************************
+  JAVASCRIPT SECTION - Updates Functionality
+  *********************************************
+  -->
+  <script>
+    // Load stored updates from local storage
+    function loadUpdates() {
+      const storedUpdates = JSON.parse(localStorage.getItem('updates')) || [];
+      const updateList = document.getElementById('updateList');
+      const updateSidebar = document.getElementById('updateSidebar');
+      
+      // Clear the lists before re-rendering
+      updateList.innerHTML = ''; 
+      updateSidebar.innerHTML = '';
+
+      // Render updates in the sidebar and main list
+      storedUpdates.forEach((update, index) => {
+        // Create sidebar item
+        const sidebarItem = document.createElement('li');
+        sidebarItem.innerHTML = `<a href="javascript:void(0);" onclick="showUpdateDetails(${index})">${update.subject}</a>`;
+        updateSidebar.appendChild(sidebarItem);
+
+        // Create main list item
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<strong>${update.date}</strong>: ${update.subject} (Approver: ${update.approver})`;
+        updateList.appendChild(listItem);
+      });
+      
+      // Show "No updates" message if empty
+      if (storedUpdates.length === 0) {
+        updateList.innerHTML = '<p>No updates available. Click "Add New Update" to create one.</p>';
+        updateSidebar.innerHTML = '<li>No updates yet</li>';
+      }
+    }
+
+    // Add new update to the list
+    function addUpdate() {
+      const date = document.getElementById('updateDate').value;
+      const subject = document.getElementById('updateSubject').value;
+      const comment = document.getElementById('updateComment').value;
+      const approver = document.getElementById('updateApprover').value;
+
+      if (date && subject && comment && approver) {
+        const newUpdate = { date, subject, comment, approver };
+
+        // Get existing updates from local storage or initialize an empty array
+        const updates = JSON.parse(localStorage.getItem('updates')) || [];
+        updates.push(newUpdate);
+
+        // Store the updated array in local storage
+        localStorage.setItem('updates', JSON.stringify(updates));
+
+        // Reload the updates to reflect the changes
+        loadUpdates();
+
+        // Clear the input fields after submission
+        document.getElementById('updateDate').value = '';
+        document.getElementById('updateSubject').value = '';
+        document.getElementById('updateComment').value = '';
+        document.getElementById('updateApprover').value = '';
+
+        // Show the updates list again
+        showUpdateList();
+      } else {
+        alert('Please fill out all fields!');
+      }
+    }
+
+    // Show the Update form
+    function showUpdateForm() {
+      document.getElementById('updateForm').style.display = 'block';
+      document.getElementById('updateListSection').style.display = 'none';
+      document.getElementById('updateDetailsSection').style.display = 'none';
+    }
+
+    // Show the list of updates
+    function showUpdateList() {
+      document.getElementById('updateForm').style.display = 'none';
+      document.getElementById('updateDetailsSection').style.display = 'none';
+      document.getElementById('updateListSection').style.display = 'block';
+      loadUpdates();
+    }
+
+    // Show details of a specific update when a subject is clicked
+    function showUpdateDetails(index) {
+      const storedUpdates = JSON.parse(localStorage.getItem('updates')) || [];
+      const update = storedUpdates[index];
+
+      // Display the details of the selected update
+      document.getElementById('detailDate').innerText = update.date;
+      document.getElementById('detailSubject').innerText = update.subject;
+      document.getElementById('detailComment').innerText = update.comment;
+      document.getElementById('detailApprover').innerText = update.approver;
+
+      // Hide the list and show the details section
+      document.getElementById('updateListSection').style.display = 'none';
+      document.getElementById('updateDetailsSection').style.display = 'block';
+    }
+  </script>
+
+  <!-- 
+  *********************************************
+  JAVASCRIPT SECTION - Dashboard Functionality
+  *********************************************
+  -->
+  <script>
+    let globalJson = []; // Store the parsed Excel data
+    
+    // Handle file upload and parsing
+    document.getElementById('fileUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, {header:1});
+          globalJson = json;
+
+          if (json && json.length > 0) {
+            renderTable(json);
+            generateChart(json);
+          } else {
+            document.getElementById('output').innerHTML = 
+              '<p>No data found in the spreadsheet. Please check your file and try again.</p>';
+          }
+        } catch (error) {
+          console.error("Error processing file:", error);
+          document.getElementById('output').innerHTML = 
+            '<p>Error processing the file. Please make sure it\'s a valid Excel file.</p>';
+        }
+      };
+
+      reader.onerror = function() {
+        document.getElementById('output').innerHTML = 
+          '<p>Failed to read the file. Please try again.</p>';
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+
+    // Render table from parsed data
+    function renderTable(json) {
+      if (!json || json.length === 0) {
+        document.getElementById('output').innerHTML = '<p>No data available to display.</p>';
+        return;
+      }
+      
+      let table = '<table id="dashboardTable">';
+      
+      // Create header row
+      if (json.length > 0) {
+        table += '<tr>';
+        json[0].forEach(cell => {
+          table += `<th>${cell !== undefined ? cell : ''}</th>`;
+        });
+        table += '</tr>';
+      }
+      
+      // Create data rows
+      for (let i = 1; i < json.length; i++) {
+        table += '<tr>';
+        if (json[i].length === 0) {
+          table += '<td colspan="' + json[0].length + '">Empty row</td>';
+        } else {
+          json[i].forEach(cell => {
+            table += `<td>${cell !== undefined ? cell : ''}</td>`;
+          });
+        }
+        table += '</tr>';
+      }
+      
+      table += '</table>';
+
+      document.getElementById('output').innerHTML = table;
+      document.getElementById('downloadBtn').classList.remove('hidden');
+    }
+
+    // Download table as CSV
+    function downloadTable() {
+      const table = document.querySelector('#dashboardTable');
+      if (!table) {
+        alert('No data available to download.');
+        return;
+      }
+      
+      let csv = [];
+      for (let row of table.rows) {
+        let cols = [];
+        for (let cell of row.cells) {
+          // Escape commas and quotes in the cell content
+          let text = cell.innerText.replace(/"/g, '""');
+          cols.push(`"${text}"`);
+        }
+        csv.push(cols.join(","));
+      }
+      
+      const csvContent = csv.join("\n");
+      const csvFile = new Blob([csvContent], { type: "text/csv" });
+      const downloadLink = document.createElement("a");
+      downloadLink.download = "dashboard_" + new Date().toLocaleDateString() + ".csv";
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.click();
+    }
+
+    // Search functionality for the table
+    function searchTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const table = document.getElementById("dashboardTable");
+      
+      if (!table) return;
+      
+      const rows = table.getElementsByTagName("tr");
+      
+      for (let i = 1; i < rows.length; i++) { // Skip header row
+        const row = rows[i];
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      }
+    }
+    // Generate chart from the parsed data
+    function generateChart(json) {
+      if (!json || json.length < 2) {
+        console.log("Not enough data for chart");
+        return;
+      }
+
+      let ctx = document.getElementById('myChart').getContext('2d');
+      
+      // Clear any existing chart
+      if (window.chartInstance) {
+        window.chartInstance.destroy();
+      }
+      
+      try {
+        // Determine what columns to use for the chart
+        // Assuming first column is labels, second column is data
+        let labels = [];
+        let data = [];
+        let headerRow = json[0];
+        
+        // Get data for chart (up to first 10 rows for readability)
+        for (let i = 1; i < Math.min(json.length, 11); i++) {
+          if (json[i][0]) { // Check if first cell exists
+            labels.push(json[i][0]);
+            // Use the second column if it exists and is a number
+            let value = Number(json[i][1]);
+            data.push(isNaN(value) ? 0 : value);
+          }
+        }
+        
+        // Create the chart
+        window.chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: headerRow[1] || 'Data Values',
+              data: data,
+              backgroundColor: 'rgba(0, 123, 255, 0.7)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: headerRow[1] || 'Values'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: headerRow[0] || 'Categories'
+                }
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error generating chart:", error);
+        document.getElementById('chartContainer').innerHTML = 
+          '<p>Unable to generate chart from the provided data. Please ensure your data is properly formatted.</p>';
+      }
+    }
+  </script>
+
+  <!-- Add a logout function -->
+  <script>
+    // Append logout button to the nav
+    document.addEventListener('DOMContentLoaded', function() {
+      const navMenu = document.getElementById('navMenu');
+      const logoutLi = document.createElement('li');
+      logoutLi.textContent = "Logout";
+      logoutLi.style.marginLeft = "20px";
+      logoutLi.addEventListener('click', logout);
+      navMenu.appendChild(logoutLi);
+    });
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("userEmail");
+      document.getElementById("loginForm").style.display = "block";
+      
+      // Hide all other sections
+      const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard'];
+      sections.forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      
+      // Clear any form data
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+    }
+  </script>
+</body>
+</html>
