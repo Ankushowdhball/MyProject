@@ -490,6 +490,7 @@
       const loggedIn = localStorage.getItem("loggedIn");
       if (loggedIn === "true") {
         showSection("email");
+        document.getElementById("email").classList.remove("hidden");
       } else {
         document.getElementById("loginForm").style.display = "block";
       }
