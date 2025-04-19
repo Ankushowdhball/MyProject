@@ -506,28 +506,29 @@
         document.getElementById("loginForm").style.display = "block";
         return;
       }
-      
+
       // Hide all sections
       const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
       sections.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.classList.add('hidden');
+        if (el) el.classList.add('hidden'); // Add 'hidden' to all sections
       });
-      
+
       // Show the requested section
-      document.getElementById(sectionId).classList.remove('hidden');
-      
+      const selectedSection = document.getElementById(sectionId);
+      if (selectedSection) selectedSection.classList.remove('hidden'); // Remove 'hidden' from the selected section
+
       // Update navigation highlighting
       const navItems = document.querySelectorAll('#navMenu li');
       navItems.forEach(item => {
         item.classList.remove('active-nav');
       });
-      
+
       const activeNav = document.getElementById(`nav-${sectionId}`);
       if (activeNav) {
         activeNav.classList.add('active-nav');
       }
-      
+
       // Set personalized greeting on home page
       if (sectionId === 'home') {
         const userEmail = localStorage.getItem("userEmail");
