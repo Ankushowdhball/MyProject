@@ -1,0 +1,14 @@
+[
+    {
+      "date": "2025-04-19",
+      "subject": "New Feature Release",
+      "comment": "We have added a new feature to the dashboard.",
+      "approver": "Admin"
+    },
+    {
+      "date": "2025-04-18",
+      "subject": "Bug Fix",
+      "comment": "Fixed an issue with the email template generator.",
+      "approver": "QA Team"
+    }
+  ]
