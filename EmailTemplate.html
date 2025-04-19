@@ -401,7 +401,7 @@
 
   <!-- Email Template Section -->
   <div id="email" class="container hidden">
-    <h2>Verification Completion Email Generator</h2>
+    <h2>Email Generator</h2>
     
     <div id="emailForm">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -534,7 +534,7 @@
         if (userEmail) {
           const username = userEmail.split('@')[0]; // Extract name from email
           document.getElementById("greeting").innerHTML = 
-            `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
+            `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}!`;
         }
       }
     }
