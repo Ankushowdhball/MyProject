@@ -774,9 +774,8 @@ ${analystName}`;
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          return response.json();
+          return response.json(); // Parse JSON here
         })
-        .then(response => response.json())
         .then(updates => {
           const update = updates[index];
           if (update) {
