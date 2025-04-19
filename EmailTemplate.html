@@ -499,45 +499,45 @@
     };
 
     // Navigation function to show specific sections
-    // function showSection(sectionId) {
-    //   // First handle authentication check
-    //   const loggedIn = localStorage.getItem("loggedIn");
-    //   if (loggedIn !== "true" && sectionId !== "loginForm") {
-    //     document.getElementById("loginForm").style.display = "block";
-    //     return;
-    //   }
+    function showSection(sectionId) {
+      // First handle authentication check
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn !== "true" && sectionId !== "loginForm") {
+        document.getElementById("loginForm").style.display = "block";
+        return;
+      }
       
-    //   // Hide all sections
-    //   const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
-    //   sections.forEach(id => {
-    //     const el = document.getElementById(id);
-    //     if (el) el.classList.add('hidden');
-    //   });
+      // Hide all sections
+      const sections = ['home', 'updates', 'knowledge', 'email', 'dashboard', 'loginForm'];
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
       
-    //   // Show the requested section
-    //   document.getElementById(sectionId).classList.remove('hidden');
+      // Show the requested section
+      document.getElementById(sectionId).classList.remove('hidden');
       
-    //   // Update navigation highlighting
-    //   const navItems = document.querySelectorAll('#navMenu li');
-    //   navItems.forEach(item => {
-    //     item.classList.remove('active-nav');
-    //   });
+      // Update navigation highlighting
+      const navItems = document.querySelectorAll('#navMenu li');
+      navItems.forEach(item => {
+        item.classList.remove('active-nav');
+      });
       
-    //   const activeNav = document.getElementById(`nav-${sectionId}`);
-    //   if (activeNav) {
-    //     activeNav.classList.add('active-nav');
-    //   }
+      const activeNav = document.getElementById(`nav-${sectionId}`);
+      if (activeNav) {
+        activeNav.classList.add('active-nav');
+      }
       
-    //   // Set personalized greeting on home page
-    //   if (sectionId === 'home') {
-    //     const userEmail = localStorage.getItem("userEmail");
-    //     if (userEmail) {
-    //       const username = userEmail.split('@')[0]; // Extract name from email
-    //       document.getElementById("greeting").innerHTML = 
-    //         `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
-    //     }
-    //   }
-    // }
+      // Set personalized greeting on home page
+      if (sectionId === 'home') {
+        const userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+          const username = userEmail.split('@')[0]; // Extract name from email
+          document.getElementById("greeting").innerHTML = 
+            `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
+        }
+      }
+    }
   </script>
 
   <!-- 
@@ -903,6 +903,7 @@ ${analystName}`;
         row.style.display = text.includes(input) ? "" : "none";
       }
     }
+
     // Generate chart from the parsed data
     function generateChart(json) {
       if (!json || json.length < 2) {
