@@ -567,12 +567,7 @@
 
         // Hide login form and show the home section
         document.getElementById("loginForm").style.display = "none";
-        showSection("home");
-        // Make email section visible
-        document.getElementById("home").classList.remove("hidden");
         showSection("email");
-      } else if (email === "" || password === "") {
-        alert("Please enter both email and password.");
       } else {
         alert("Invalid email or password. Please try again.");
       }
