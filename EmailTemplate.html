@@ -685,12 +685,8 @@ ${analystName}`;
     // Fetch updates from the JSON file hosted on GitHub
     async function loadUpdates() {
       try {
-        const response = await fetch('https://Ankushowdhball.github.io/MyProject/updates.json');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const updates = await response.json();
-        console.log('Fetched updates:', updates); // Debugging
+        // Fetch updates from local storage
+        const updates = JSON.parse(localStorage.getItem('updates')) || [];
 
         // Render updates
         const updateList = document.getElementById('updateList');
@@ -714,7 +710,7 @@ ${analystName}`;
           updateSidebar.innerHTML = '<li>No updates yet</li>';
         }
       } catch (error) {
-        console.error('Error fetching updates:', error);
+        console.error('Error loading updates:', error);
         document.getElementById('updateList').innerHTML = '<p>Error loading updates. Please try again later.</p>';
       }
     }
@@ -736,8 +732,19 @@ ${analystName}`;
         // Store the updated array in local storage
         localStorage.setItem('updates', JSON.stringify(updates));
 
-        // Reload the updates to reflect the changes
-        loadUpdates();
+        // Dynamically update the sidebar and main list
+        const updateSidebar = document.getElementById('updateSidebar');
+        const updateList = document.getElementById('updateList');
+
+        // Add the new update to the sidebar
+        const sidebarItem = document.createElement('li');
+        sidebarItem.innerHTML = `<a href="javascript:void(0);" onclick="showUpdateDetails(${updates.length - 1})">${newUpdate.subject}</a>`;
+        updateSidebar.appendChild(sidebarItem);
+
+        // Add the new update to the main list
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<strong>${newUpdate.date}</strong>: ${newUpdate.subject} (Approver: ${newUpdate.approver})`;
+        updateList.appendChild(listItem);
 
         // Clear the input fields after submission
         document.getElementById('updateDate').value = '';
