@@ -489,8 +489,7 @@
       // Check login state on page load
       const loggedIn = localStorage.getItem("loggedIn");
       if (loggedIn === "true") {
-        showSection("email");
-        document.getElementById("email").classList.remove("hidden");
+        showSection("home");
       } else {
         document.getElementById("loginForm").style.display = "block";
       }
