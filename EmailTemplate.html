@@ -500,6 +500,8 @@
 
     // Navigation function to show specific sections
     function showSection(sectionId) {
+      console.log(`Navigating to section: ${sectionId}`); // Debugging
+
       // First handle authentication check
       const loggedIn = localStorage.getItem("loggedIn");
       if (loggedIn !== "true" && sectionId !== "loginForm") {
@@ -516,27 +518,9 @@
 
       // Show the requested section
       const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) selectedSection.classList.remove('hidden'); // Remove 'hidden' from the selected section
-
-      // Update navigation highlighting
-      const navItems = document.querySelectorAll('#navMenu li');
-      navItems.forEach(item => {
-        item.classList.remove('active-nav');
-      });
-
-      const activeNav = document.getElementById(`nav-${sectionId}`);
-      if (activeNav) {
-        activeNav.classList.add('active-nav');
-      }
-
-      // Set personalized greeting on home page
-      if (sectionId === 'home') {
-        const userEmail = localStorage.getItem("userEmail");
-        if (userEmail) {
-          const username = userEmail.split('@')[0]; // Extract name from email
-          document.getElementById("greeting").innerHTML = 
-            `Welcome, ${username.charAt(0).toUpperCase() + username.slice(1)}! How can we assist you today?`;
-        }
+      if (selectedSection) {
+        selectedSection.classList.remove('hidden'); // Remove 'hidden' from the selected section
+        console.log(`Section ${sectionId} is now visible`); // Debugging
       }
     }
   </script>
