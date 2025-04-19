@@ -685,32 +685,32 @@ ${analystName}`;
     // Fetch updates from the JSON file hosted on GitHub
     async function loadUpdates() {
       try {
-        const response = await fetch('https://Ankushowdhball.github.io/MyProject/updates.json'); // Replace with your actual URL
+        const response = await fetch('https://Ankushowdhball.github.io/MyProject/updates.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const updates = await response.json();
+        console.log('Fetched updates:', updates); // Debugging
 
+        // Render updates
         const updateList = document.getElementById('updateList');
         const updateSidebar = document.getElementById('updateSidebar');
 
-        // Clear the lists before re-rendering
         updateList.innerHTML = '';
         updateSidebar.innerHTML = '';
 
-        // Render updates in the sidebar and main list
         updates.forEach((update, index) => {
-          // Create sidebar item
           const sidebarItem = document.createElement('li');
           sidebarItem.innerHTML = `<a href="javascript:void(0);" onclick="showUpdateDetails(${index})">${update.subject}</a>`;
           updateSidebar.appendChild(sidebarItem);
 
-          // Create main list item
           const listItem = document.createElement('li');
           listItem.innerHTML = `<strong>${update.date}</strong>: ${update.subject} (Approver: ${update.approver})`;
           updateList.appendChild(listItem);
         });
 
-        // Show "No updates" message if empty
         if (updates.length === 0) {
-          updateList.innerHTML = '<p>No updates available. Click "Add New Update" to create one.</p>';
+          updateList.innerHTML = '<p>No updates available.</p>';
           updateSidebar.innerHTML = '<li>No updates yet</li>';
         }
       } catch (error) {
@@ -769,18 +769,30 @@ ${analystName}`;
 
     // Show details of a specific update when a subject is clicked
     function showUpdateDetails(index) {
-      const storedUpdates = JSON.parse(localStorage.getItem('updates')) || [];
-      const update = storedUpdates[index];
-
-      // Display the details of the selected update
-      document.getElementById('detailDate').innerText = update.date;
-      document.getElementById('detailSubject').innerText = update.subject;
-      document.getElementById('detailComment').innerText = update.comment;
-      document.getElementById('detailApprover').innerText = update.approver;
-
-      // Hide the list and show the details section
-      document.getElementById('updateListSection').style.display = 'none';
-      document.getElementById('updateDetailsSection').style.display = 'block';
+      fetch('https://Ankushowdhball.github.io/MyProject/updates.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(response => response.json())
+        .then(updates => {
+          const update = updates[index];
+          if (update) {
+            const updateDetails = document.getElementById('updateDetailsSection');
+            updateDetails.innerHTML = `
+              <h3>${update.subject}</h3>
+              <p><strong>Date:</strong> ${update.date}</p>
+              <p><strong>Comment:</strong> ${update.comment}</p>
+              <p><strong>Approver:</strong> ${update.approver}</p>
+            `;
+            updateDetails.style.display = 'block';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching update details:', error);
+        });
     }
   </script>
 
