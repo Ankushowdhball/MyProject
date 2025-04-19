@@ -685,7 +685,7 @@ ${analystName}`;
     // Fetch updates from the JSON file hosted on GitHub
     async function loadUpdates() {
       try {
-        const response = await fetch('https://github.com/Ankushowdhball/MyProject.git/updates.json'); // Replace with your actual URL
+        const response = await fetch('https://github.com/Ankushowdhball/MyProject.git'); // Replace with your actual URL
         const updates = await response.json();
 
         const updateList = document.getElementById('updateList');
